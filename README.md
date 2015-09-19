@@ -1,6 +1,8 @@
 # PyBresenham
 Pythonimplementation of Bresenham Line-Drawing
 
+wikipedia quotes:
+
 '''Bresenham's line algorithm''' is an [[algorithm]] that determines the points of an ''n''-dimensional [[raster graphics|raster]] that should be selected in order to form a close approximation to a straight line between two points. It is commonly used to draw lines on a computer screen, as it uses only integer addition, subtraction and [[Bitwise operation|bit shifting]], all of which are very cheap operations in standard [[computer architecture]]s. It is one of the earliest algorithms developed in the field of [[computer graphics]]. An extension to the original algorithm may be used for drawing circles.
 
 While algorithms such as [[Xiaolin Wu's line algorithm|Wu's algorithm]] are also frequently used in modern computer graphics because they can support [[Spatial anti-aliasing|antialiasing]], the speed and simplicity of Bresenham's line algorithm means that it is still important. The algorithm is used in hardware such as [[plotter]]s and in the [[Graphics processing unit|graphics chips]] of modern [[graphics card]]s. It can also be found in many software [[graphics library|graphics libraries]]. Because the algorithm is very simple, it is often implemented in either the [[firmware]] or the [[graphics hardware]] of modern graphics cards.
