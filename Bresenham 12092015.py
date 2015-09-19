@@ -1,7 +1,7 @@
 '''
 Bresenham
 http://cobrabytes.squeakyduck.co.uk/forum/index.php?topic=1150.0
-@author: mukesch.shah@uniklinik-freiburg.de
+
 
 
 '''
@@ -75,6 +75,7 @@ def draw3DLine (x0, y0, z0, x1, y1, z1):
             drift_xz = drift_xz + delta_x
 
 
+## fuer das umrechnen
 imageSpacingX = 0.583984375
 imageSpacingY = 0.583984375
 imageSpacingZ = 1
@@ -83,5 +84,81 @@ def mmToPixel (x,y,z):
     px = x/imageSpacingX
     py = y/imageSpacingY
     pz = z/imageSpacingZ
-
     return [px,py,pz]
+
+'''
+http://stackoverflow.com/questions/9084189/draw-a-sphere-using-3d-pixels-voxels
+'''
+
+def draw3DCircle (x0, y0, z0, y1, radius, error0):
+    x = radius
+    z = 0
+    radiusError = error0 ## Initial error state passed in, NOT 1-x
+
+    while (x >= z):
+        # draw the 32 points here.
+        '''
+        Draw the standard circle algorithm points at
+        y0 + y1 and y0 - y1: x0 +/- x, z0 +/- z, y0 +/- y1, x0 +/- z, z0 +/- x, y0 +/- y1,
+        total 16 points. This forms the bulk of the vertical of the sphere. octant
+        '''
+        a[x0+x,y0+y1,z0+z]=250 # 1, 1, 1
+        a[x0-x,y0+y1,z0+z]=250 # -1, 1, 1
+        a[x0-x,y0-y1,z0+z]=250 # -1, -1, 1
+        a[x0+x,y0-y1,z0+z]=250 # 1, -1, 1
+        a[x0+x,y0+y1,z0-z]=250 # 1, 1, -1
+        a[x0-x,y0+y1,z0-z]=250 # -1, 1, -1
+        a[x0-x,y0-y1,z0-z]=250 # -1, -1, -1
+        a[x0+x,y0-y1,z0-z]=250 # 1, -1, -1
+
+        a[x0+z,y0+y1,z0+x]=250 # 1, 1, 1
+        a[x0-z,y0+y1,z0+x]=250 # -1, 1, 1
+        a[x0-z,y0-y1,z0+x]=250 # -1, -1, 1
+        a[x0+z,y0-y1,z0+x]=250 # 1, -1, 1
+        a[x0+z,y0+y1,z0-x]=250 # 1, 1, -1
+        a[x0-z,y0+y1,z0-x]=250 # -1, 1, -1
+        a[x0-z,y0-y1,z0-x]=250 # -1, -1, -1
+        a[x0+z,y0-y1,z0-x]=250 # 1, -1, -1
+
+        ## aditional points
+
+        a[x0+y1,y0+z,z0+x]=250 # 1, 1, 1
+        a[x0-y1,y0+z,z0+x]=250 # -1, 1, 1
+        a[x0-y1,y0-z,z0+x]=250 # -1, -1, 1
+        a[x0+y1,y0-z,z0+x]=250 # 1, -1, 1
+        a[x0+y1,y0+z,z0-x]=250 # 1, 1, -1
+        a[x0-y1,y0+z,z0-x]=250 # -1, 1, -1
+        a[x0-y1,y0-z,z0-x]=250 # -1, -1, -1
+        a[x0+y1,y0-z,z0-x]=250 # 1, -1, -1
+
+        a[x0+x,y0+z,z0+y1]=250 # 1, 1, 1
+        a[x0-x,y0+z,z0+y1]=250 # -1, 1, 1
+        a[x0-x,y0-z,z0+y1]=250 # -1, -1, 1
+        a[x0+x,y0-z,z0+y1]=250 # 1, -1, 1
+        a[x0+x,y0+z,z0-y1]=250 # 1, 1, -1
+        a[x0-x,y0+z,z0-y1]=250 # -1, 1, -1
+        a[x0-x,y0-z,z0-y1]=250 # -1, -1, -1
+        a[x0+x,y0-z,z0-y1]=250 # 1, -1, -1
+
+        z +=1
+        if(radiusError<0):
+            radiusError+=2*z+1
+        else:
+            x-=1
+            radiusError+=2*(z-x+1)
+
+def draw3DSphere(x0, y0, z0, radius):
+    x = radius/2  # otherweise radius was diameter
+    y = 0
+    radiusError = 1-x
+
+    while (x >= y):
+        # pass in base point (x0,y0,z0), this algorithm's y as y1,
+        # this algorithm's x as the radius, and pass along radius error.
+        draw3DCircle(x0, y0, z0, y, x, radiusError)
+        y+=1
+        if(radiusError<0):
+            radiusError+=2*y+1
+        else:
+            x-=1
+            radiusError+=2*(y-x+1)
